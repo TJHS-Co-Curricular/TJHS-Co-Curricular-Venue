@@ -21,7 +21,6 @@ clearBtn.innerHTML = "&times;";
 clearBtn.className = "clear-search";
 clearBtn.title = "清除搜索";
 clearBtn.style.display = "none";
-searchContainer.style.position = "relative";
 searchContainer.appendChild(clearBtn);
 
 let venueData = {};

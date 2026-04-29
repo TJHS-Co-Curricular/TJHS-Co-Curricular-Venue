@@ -11,14 +11,13 @@ This project provides a searchable interface for students and staff to find acti
 - **Key Features:**
   - Real-time search across all venues and groups.
   - Tabbed navigation by building/area.
-  - Dark mode support (system-preferred).
   - Responsive design for mobile/desktop.
 
 ## Project Structure
 
 - `index.html`: The main entry point and UI structure.
 - `script.js`: Core logic for data fetching, searching, and DOM manipulation.
-- `style.css`: Modern, responsive styling with theme support.
+- `style.css`: Modern, responsive styling.
 - `Venue/`: Directory containing CSV data files (`VenueA.csv` to `VenueF.csv`).
 - `GEMINI.md`: Project-specific instructions and context (this file).
 
@@ -52,6 +51,6 @@ The CSV files in the `Venue/` directory should have a header row. The system dyn
 
 ## Conventions
 
-- **Styling:** Use Vanilla CSS with CSS Variables for theme management.
+- **Styling:** Use Vanilla CSS with CSS Variables.
 - **Dependencies:** Avoid adding heavy libraries. Currently only depends on PapaParse via CDN.
 - **Language:** UI text is primarily in Simplified Chinese (`zh-CN`).
