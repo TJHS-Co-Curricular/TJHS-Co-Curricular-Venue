@@ -213,7 +213,7 @@ function renderTable(fileName) {
   let html = `
         <div class="venue-header">
             <h3>📍 ${label}</h3>
-            <span class="row-count">${data.length} entries</span>
+            <span class="row-count">${data.length} 数据</span>
         </div>
         <div class="table-wrapper">
             <table>
