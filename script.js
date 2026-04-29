@@ -14,9 +14,20 @@ const displayArea = document.getElementById("display-area");
 const autoLoadStatus = document.getElementById("auto-load-status");
 const searchInput = document.getElementById("venue-search");
 
+// Create search clear button
+const searchContainer = document.querySelector(".search-container");
+const clearBtn = document.createElement("button");
+clearBtn.innerHTML = "&times;";
+clearBtn.className = "clear-search";
+clearBtn.title = "清除搜索";
+clearBtn.style.display = "none";
+searchContainer.style.position = "relative";
+searchContainer.appendChild(clearBtn);
+
 let venueData = {};
 let activeVenue = "";
 let searchQuery = "";
+let searchTimeout = null;
 
 /**
  * Main loading function
@@ -93,18 +104,45 @@ function renderAllTabs() {
       btn.textContent = venueConfig[fileName] || fileName.replace(".csv", "");
       btn.onclick = () => {
         activeVenue = fileName;
-        renderAllTabs();
+        // Don't re-render everything, just update buttons and table
+        updateTabButtons();
         renderTable(fileName);
       };
       tabsContainer.appendChild(btn);
     });
 }
 
-// Search input event listener
+function updateTabButtons() {
+  const buttons = tabsContainer.querySelectorAll(".tab-button");
+  const venueFiles = Object.keys(venueData).sort();
+  buttons.forEach((btn, index) => {
+    const fileName = venueFiles[index];
+    if (fileName === activeVenue) {
+      btn.classList.add("active");
+    } else {
+      btn.classList.remove("active");
+    }
+  });
+}
+
+// Search input event listener with debounce
 searchInput.addEventListener("input", (e) => {
   searchQuery = e.target.value.trim().toLowerCase();
-  renderContent();
+  clearBtn.style.display = searchQuery ? "block" : "none";
+  
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => {
+    renderContent();
+  }, 250);
 });
+
+clearBtn.onclick = () => {
+  searchInput.value = "";
+  searchQuery = "";
+  clearBtn.style.display = "none";
+  renderContent();
+  searchInput.focus();
+};
 
 /**
  * Main display coordinator
@@ -123,13 +161,21 @@ function renderContent() {
 }
 
 /**
+ * Helper to highlight text
+ */
+function highlight(text, query) {
+  if (!query) return text;
+  const regex = new RegExp(`(${query})`, "gi");
+  return String(text).replace(regex, '<mark class="highlight">$1</mark>');
+}
+
+/**
  * Renders matches from all venues
  */
 function renderGlobalSearch() {
   let html = "";
   let totalMatches = 0;
 
-  // Sort filenames to keep order consistent
   const sortedFiles = Object.keys(venueData).sort();
 
   sortedFiles.forEach((fileName) => {
@@ -150,7 +196,7 @@ function renderGlobalSearch() {
         <div class="venue-group">
             <div class="venue-header">
                 <h3>📍 ${label}</h3>
-                <span class="row-count">${filteredData.length} 匹配关键字</span>
+                <span class="row-count">${filteredData.length} 匹配</span>
             </div>
             <div class="table-wrapper">
                 <table>
@@ -164,7 +210,7 @@ function renderGlobalSearch() {
                           .map(
                             (row) => `
                             <tr>
-                                ${headers.map((h) => `<td>${row[h] ? row[h].trim() : "-"}</td>`).join("")}
+                                ${headers.map((h) => `<td>${row[h] ? highlight(row[h].trim(), searchQuery) : "-"}</td>`).join("")}
                             </tr>
                         `,
                           )
@@ -180,7 +226,7 @@ function renderGlobalSearch() {
   if (totalMatches > 0) {
     displayArea.innerHTML = `
       <div class="search-summary">
-        找到 <b>${totalMatches}</b> 匹配关键字"${searchQuery}"
+        找到 <b>${totalMatches}</b> 处匹配关键字 "${searchQuery}"
       </div>
       ${html}
     `;
@@ -213,7 +259,7 @@ function renderTable(fileName) {
   let html = `
         <div class="venue-header">
             <h3>📍 ${label}</h3>
-            <span class="row-count">${data.length} 数据</span>
+            <span class="row-count">${data.length} 条数据</span>
         </div>
         <div class="table-wrapper">
             <table>

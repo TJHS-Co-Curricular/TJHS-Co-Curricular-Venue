@@ -91,6 +91,24 @@ main {
     box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
+.clear-search {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 5px;
+}
+
+.clear-search:hover {
+    color: var(--primary-color);
+}
+
 .venue-tabs {
     display: flex;
     gap: 0.75rem;
@@ -243,6 +261,20 @@ footer p {
 .footer-link:hover {
     color: var(--primary-hover);
     text-decoration: underline;
+}
+
+/* Highlight search results */
+.highlight {
+    background-color: #fef08a;
+    color: #854d0e;
+    padding: 0 2px;
+    border-radius: 2px;
+    font-weight: 600;
+}
+
+/* Alternate row colors */
+tbody tr:nth-child(even) {
+    background-color: #f8fafc;
 }
 
 /* Responsive */
