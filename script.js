@@ -1,11 +1,11 @@
 /* === CONFIGURATION: ADD NEW FILES AND LABELS HERE === */
 const venueConfig = {
-  "/Venue/VenueA.csv": "综合活动空间",
-  "/Venue/VenueB.csv": "B楼",
-  "/Venue/VenueC.csv": "C楼",
-  "/Venue/VenueD.csv": "D楼",
-  "/Venue/VenueE.csv": "E楼（英文楼）",
-  "/Venue/VenueF.csv": "F楼（双子楼）",
+  "./Venue/VenueA.csv": "综合活动空间",
+  "./Venue/VenueB.csv": "B楼",
+  "./Venue/VenueC.csv": "C楼",
+  "./Venue/VenueD.csv": "D楼",
+  "./Venue/VenueE.csv": "E楼（英文楼）",
+  "./Venue/VenueF.csv": "F楼（双子楼）",
 };
 /* ========================================= */
 
