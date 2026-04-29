@@ -1,11 +1,11 @@
 /* === CONFIGURATION: ADD NEW FILES AND LABELS HERE === */
 const venueConfig = {
-  "VenueA.csv": "综合活动空间",
-  "VenueB.csv": "B楼",
-  "VenueC.csv": "C楼",
-  "VenueD.csv": "D楼",
-  "VenueE.csv": "E楼（英文楼）",
-  "VenueF.csv": "F楼（双子楼）",
+  "/Venue/VenueA.csv": "综合活动空间",
+  "/Venue/VenueB.csv": "B楼",
+  "/Venue/VenueC.csv": "C楼",
+  "/Venue/VenueD.csv": "D楼",
+  "/Venue/VenueE.csv": "E楼（英文楼）",
+  "/Venue/VenueF.csv": "F楼（双子楼）",
 };
 /* ========================================= */
 
@@ -128,7 +128,7 @@ function updateTabButtons() {
 searchInput.addEventListener("input", (e) => {
   searchQuery = e.target.value.trim().toLowerCase();
   clearBtn.style.display = searchQuery ? "block" : "none";
-  
+
   clearTimeout(searchTimeout);
   searchTimeout = setTimeout(() => {
     renderContent();
@@ -162,7 +162,7 @@ function renderContent() {
  * Helper to escape Regex characters
  */
 function escapeRegExp(string) {
-  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 /**
