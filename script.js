@@ -87,7 +87,7 @@ async function autoLoad() {
   } else {
     autoLoadStatus.textContent = "❌ 无法找到“场地.csv”文件.";
     displayArea.innerHTML =
-      '<div class="empty-state"><span class="empty-state-icon">❓</span><p>请确保“场地.csv”文件在当然目录文件夹下 .</p></div>';
+      '<div class="empty-state"><span class="empty-state-icon">❓</span><p>请确保场地文件在当前目录下.</p></div>';
   }
 }
 
@@ -104,7 +104,6 @@ function renderAllTabs() {
       btn.textContent = venueConfig[fileName] || fileName.replace(".csv", "");
       btn.onclick = () => {
         activeVenue = fileName;
-        // Don't re-render everything, just update buttons and table
         updateTabButtons();
         renderTable(fileName);
       };
@@ -155,9 +154,15 @@ function renderContent() {
     return;
   }
 
-  // Global search mode
   tabsContainer.style.display = "none";
   renderGlobalSearch();
+}
+
+/**
+ * Helper to escape Regex characters
+ */
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 /**
@@ -165,8 +170,34 @@ function renderContent() {
  */
 function highlight(text, query) {
   if (!query) return text;
-  const regex = new RegExp(`(${query})`, "gi");
+  const regex = new RegExp(`(${escapeRegExp(query)})`, "gi");
   return String(text).replace(regex, '<mark class="highlight">$1</mark>');
+}
+
+/**
+ * Generates HTML for a table
+ */
+function generateTableHTML(data, headers, query = "") {
+  return `
+    <table>
+        <thead>
+            <tr>
+                ${headers.map((h) => `<th>${h}</th>`).join("")}
+            </tr>
+        </thead>
+        <tbody>
+            ${data
+              .map(
+                (row) => `
+                <tr>
+                    ${headers.map((h) => `<td>${row[h] ? highlight(row[h].trim(), query) : "-"}</td>`).join("")}
+                </tr>
+            `,
+              )
+              .join("")}
+        </tbody>
+    </table>
+  `;
 }
 
 /**
@@ -199,24 +230,7 @@ function renderGlobalSearch() {
                 <span class="row-count">${filteredData.length} 匹配</span>
             </div>
             <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            ${headers.map((h) => `<th>${h}</th>`).join("")}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${filteredData
-                          .map(
-                            (row) => `
-                            <tr>
-                                ${headers.map((h) => `<td>${row[h] ? highlight(row[h].trim(), searchQuery) : "-"}</td>`).join("")}
-                            </tr>
-                        `,
-                          )
-                          .join("")}
-                    </tbody>
-                </table>
+                ${generateTableHTML(filteredData, headers, searchQuery)}
             </div>
         </div>
       `;
@@ -262,24 +276,7 @@ function renderTable(fileName) {
             <span class="row-count">${data.length} 条数据</span>
         </div>
         <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        ${headers.map((h) => `<th>${h}</th>`).join("")}
-                    </tr>
-                </thead>
-                <tbody>
-                    ${data
-                      .map(
-                        (row) => `
-                        <tr>
-                            ${headers.map((h) => `<td>${row[h] ? row[h].trim() : "-"}</td>`).join("")}
-                        </tr>
-                    `,
-                      )
-                      .join("")}
-                </tbody>
-            </table>
+            ${generateTableHTML(data, headers, "")}
         </div>
     `;
 
