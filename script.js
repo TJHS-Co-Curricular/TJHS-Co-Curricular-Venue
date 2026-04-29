@@ -150,7 +150,7 @@ function renderGlobalSearch() {
         <div class="venue-group">
             <div class="venue-header">
                 <h3>📍 ${label}</h3>
-                <span class="row-count">${filteredData.length} matches found</span>
+                <span class="row-count">${filteredData.length} 匹配关键字</span>
             </div>
             <div class="table-wrapper">
                 <table>
