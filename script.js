@@ -24,40 +24,42 @@ let searchQuery = "";
 async function autoLoad() {
   if (window.location.protocol === "file:") {
     autoLoadStatus.innerHTML =
-      "⚠️ <b>Local Access Denied:</b> Browsers block auto-loading CSVs when opened directly from a folder. " +
-      "Please use a <b>Local Server</b> (like Live Server) to see the data.";
+      "⚠️ <b>Local Access Denied:</b> 浏览器阻挡加载本地文件夹CSV文件 " +
+      "请使用 <b>本地服务器</b> (例如：Live Server) 来查看数据";
     displayArea.innerHTML =
-      '<div class="empty-state"><span class="empty-state-icon">🚫</span><p>Waiting for web environment...</p></div>';
+      '<div class="empty-state"><span class="empty-state-icon">🚫</span><p>正在等待网络环境响应...</p></div>';
     return;
   }
 
-  autoLoadStatus.textContent = "🔍 Loading venue data...";
-  
-  const loadTasks = Object.entries(venueConfig).map(async ([fileName, label]) => {
-    try {
-      const response = await fetch(fileName, { cache: "no-cache" });
-      if (!response.ok) return null;
+  autoLoadStatus.textContent = "🔍 正在载入场地资料...";
 
-      const csvText = await response.text();
-      const results = Papa.parse(csvText, {
-        header: true,
-        skipEmptyLines: true,
-        dynamicTyping: false,
-      });
+  const loadTasks = Object.entries(venueConfig).map(
+    async ([fileName, label]) => {
+      try {
+        const response = await fetch(fileName, { cache: "no-cache" });
+        if (!response.ok) return null;
 
-      if (results.data && results.data.length > 0) {
-        return { fileName, data: results.data };
+        const csvText = await response.text();
+        const results = Papa.parse(csvText, {
+          header: true,
+          skipEmptyLines: true,
+          dynamicTyping: false,
+        });
+
+        if (results.data && results.data.length > 0) {
+          return { fileName, data: results.data };
+        }
+      } catch (err) {
+        console.warn(`加载错误 ${fileName}:`, err);
       }
-    } catch (err) {
-      console.warn(`Error loading ${fileName}:`, err);
-    }
-    return null;
-  });
+      return null;
+    },
+  );
 
   const results = await Promise.all(loadTasks);
   let loadedCount = 0;
 
-  results.forEach(result => {
+  results.forEach((result) => {
     if (result) {
       venueData[result.fileName] = result.data;
       loadedCount++;
@@ -72,9 +74,9 @@ async function autoLoad() {
     renderAllTabs();
     renderTable(activeVenue);
   } else {
-    autoLoadStatus.textContent = "❌ No venue files found.";
+    autoLoadStatus.textContent = "❌ 无法找到“场地.csv”文件.";
     displayArea.innerHTML =
-      '<div class="empty-state"><span class="empty-state-icon">❓</span><p>Please ensure your CSV files are in the same folder.</p></div>';
+      '<div class="empty-state"><span class="empty-state-icon">❓</span><p>请确保“场地.csv”文件在当然目录文件夹下 .</p></div>';
   }
 }
 
@@ -178,7 +180,7 @@ function renderGlobalSearch() {
   if (totalMatches > 0) {
     displayArea.innerHTML = `
       <div class="search-summary">
-        Found <b>${totalMatches}</b> matches across all venues for "${searchQuery}"
+        找到 <b>${totalMatches}</b> 匹配关键字"${searchQuery}"
       </div>
       ${html}
     `;
@@ -186,7 +188,7 @@ function renderGlobalSearch() {
     displayArea.innerHTML = `
       <div class="empty-state">
         <span class="empty-state-icon">🔍</span>
-        <p>No matches found for "${searchQuery}" in any venue.</p>
+        <p>无法找到匹配关键字 "${searchQuery}" </p>
       </div>
     `;
   }
@@ -202,7 +204,7 @@ function renderTable(fileName) {
 
   if (!data || data.length === 0) {
     displayArea.innerHTML =
-      '<div class="empty-state"><span class="empty-state-icon">ℹ️</span><p>No data found in this file.</p></div>';
+      '<div class="empty-state"><span class="empty-state-icon">ℹ️</span><p>没有资料在此文件</p></div>';
     return;
   }
 
