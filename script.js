@@ -31,16 +31,14 @@ async function autoLoad() {
     return;
   }
 
-  autoLoadStatus.textContent = "🔍 Scanning for venue data...";
-  let loadedCount = 0;
-
-  for (const [fileName, label] of Object.entries(venueConfig)) {
+  autoLoadStatus.textContent = "🔍 Loading venue data...";
+  
+  const loadTasks = Object.entries(venueConfig).map(async ([fileName, label]) => {
     try {
       const response = await fetch(fileName, { cache: "no-cache" });
-      if (!response.ok) continue;
+      if (!response.ok) return null;
 
       const csvText = await response.text();
-
       const results = Papa.parse(csvText, {
         header: true,
         skipEmptyLines: true,
@@ -48,23 +46,31 @@ async function autoLoad() {
       });
 
       if (results.data && results.data.length > 0) {
-        venueData[fileName] = results.data;
-        loadedCount++;
-
-        if (!activeVenue) {
-          activeVenue = fileName;
-        }
-
-        renderAllTabs();
-        renderTable(activeVenue);
+        return { fileName, data: results.data };
       }
     } catch (err) {
       console.warn(`Error loading ${fileName}:`, err);
     }
-  }
+    return null;
+  });
+
+  const results = await Promise.all(loadTasks);
+  let loadedCount = 0;
+
+  results.forEach(result => {
+    if (result) {
+      venueData[result.fileName] = result.data;
+      loadedCount++;
+      if (!activeVenue) {
+        activeVenue = result.fileName;
+      }
+    }
+  });
 
   if (loadedCount > 0) {
     autoLoadStatus.style.display = "none";
+    renderAllTabs();
+    renderTable(activeVenue);
   } else {
     autoLoadStatus.textContent = "❌ No venue files found.";
     displayArea.innerHTML =
