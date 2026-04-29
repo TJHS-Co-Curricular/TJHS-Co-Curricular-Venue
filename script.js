@@ -98,8 +98,102 @@ function renderAllTabs() {
     });
 }
 
+// Search input event listener
+searchInput.addEventListener("input", (e) => {
+  searchQuery = e.target.value.trim().toLowerCase();
+  renderContent();
+});
+
 /**
- * Renders the data table for a specific venue
+ * Main display coordinator
+ */
+function renderContent() {
+  if (!searchQuery) {
+    tabsContainer.style.display = "flex";
+    renderAllTabs();
+    renderTable(activeVenue);
+    return;
+  }
+
+  // Global search mode
+  tabsContainer.style.display = "none";
+  renderGlobalSearch();
+}
+
+/**
+ * Renders matches from all venues
+ */
+function renderGlobalSearch() {
+  let html = "";
+  let totalMatches = 0;
+
+  // Sort filenames to keep order consistent
+  const sortedFiles = Object.keys(venueData).sort();
+
+  sortedFiles.forEach((fileName) => {
+    const data = venueData[fileName];
+    const label = venueConfig[fileName] || fileName.replace(".csv", "");
+    const headers = Object.keys(data[0]);
+
+    const filteredData = data.filter((row) => {
+      return headers.some((header) => {
+        const val = String(row[header] || "").toLowerCase();
+        return val.includes(searchQuery);
+      });
+    });
+
+    if (filteredData.length > 0) {
+      totalMatches += filteredData.length;
+      html += `
+        <div class="venue-group">
+            <div class="venue-header">
+                <h3>📍 ${label}</h3>
+                <span class="row-count">${filteredData.length} matches found</span>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            ${headers.map((h) => `<th>${h}</th>`).join("")}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${filteredData
+                          .map(
+                            (row) => `
+                            <tr>
+                                ${headers.map((h) => `<td>${row[h] ? row[h].trim() : "-"}</td>`).join("")}
+                            </tr>
+                        `,
+                          )
+                          .join("")}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+      `;
+    }
+  });
+
+  if (totalMatches > 0) {
+    displayArea.innerHTML = `
+      <div class="search-summary">
+        Found <b>${totalMatches}</b> matches across all venues for "${searchQuery}"
+      </div>
+      ${html}
+    `;
+  } else {
+    displayArea.innerHTML = `
+      <div class="empty-state">
+        <span class="empty-state-icon">🔍</span>
+        <p>No matches found for "${searchQuery}" in any venue.</p>
+      </div>
+    `;
+  }
+}
+
+/**
+ * Renders the data table for a specific venue (Standard View)
  */
 function renderTable(fileName) {
   if (!fileName) return;
@@ -114,19 +208,10 @@ function renderTable(fileName) {
 
   const headers = Object.keys(data[0]);
 
-  // Filter data based on search query
-  const filteredData = data.filter((row) => {
-    if (!searchQuery) return true;
-    return headers.some((header) => {
-      const val = String(row[header] || "").toLowerCase();
-      return val.includes(searchQuery.toLowerCase());
-    });
-  });
-
   let html = `
         <div class="venue-header">
             <h3>📍 ${label}</h3>
-            <span class="row-count">${filteredData.length} entries shown</span>
+            <span class="row-count">${data.length} entries</span>
         </div>
         <div class="table-wrapper">
             <table>
@@ -136,7 +221,7 @@ function renderTable(fileName) {
                     </tr>
                 </thead>
                 <tbody>
-                    ${filteredData
+                    ${data
                       .map(
                         (row) => `
                         <tr>
@@ -150,27 +235,8 @@ function renderTable(fileName) {
         </div>
     `;
 
-  if (filteredData.length === 0) {
-    html = `
-            <div class="venue-header">
-                <h3>📍 ${label}</h3>
-                <span class="row-count">0 entries shown</span>
-            </div>
-            <div class="empty-state">
-                <span class="empty-state-icon">🔍</span>
-                <p>No matches found for "${searchQuery}" in this venue.</p>
-            </div>
-        `;
-  }
-
   displayArea.innerHTML = html;
 }
-
-// Search input event listener
-searchInput.addEventListener("input", (e) => {
-  searchQuery = e.target.value;
-  renderTable(activeVenue);
-});
 
 // Initial load
 autoLoad();

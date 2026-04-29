@@ -182,6 +182,24 @@ tr:hover td {
     color: var(--text-main);
 }
 
+.search-summary {
+    padding: 1rem 1.5rem;
+    background: #eef2ff;
+    color: var(--primary-color);
+    font-size: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.venue-group {
+    margin-bottom: 2rem;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.venue-group:last-child {
+    margin-bottom: 0;
+    border-bottom: none;
+}
+
 .row-count {
     font-size: 0.875rem;
     color: var(--text-muted);
