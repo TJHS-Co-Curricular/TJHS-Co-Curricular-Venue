@@ -148,7 +148,9 @@ body {
 
 .search-container {
     position: relative;
-    width: 300px;
+    width: 100%;
+    max-width: 300px;
+    flex-shrink: 1;
 }
 
 .search-input {
@@ -171,12 +173,15 @@ body {
     border-color: var(--primary-color);
     outline: none;
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
-    width: 360px; /* Refined expansion */
 }
 
-@media (max-width: 1024px) {
+@media (min-width: 1025px) {
     .search-input:focus {
-        width: 100%; /* Don't expand on smaller screens */
+        width: 120%; /* Expand slightly if space permits */
+        position: absolute;
+        right: 0;
+        z-index: 10;
+        background: var(--header-bg); /* Opaque when expanded */
     }
 }
 
