@@ -188,7 +188,7 @@ function generateTableHTML(data, headers, query = "") {
             ${data
               .map(
                 (row) => `
-                <tr>
+                <tr onclick="this.classList.toggle('active-row')">
                     ${headers.map((h) => `<td>${row[h] ? highlight(row[h].trim(), query) : "-"}</td>`).join("")}
                 </tr>
             `,
