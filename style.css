@@ -171,7 +171,7 @@ body {
     border-color: var(--primary-color);
     outline: none;
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
-    width: 400px; /* Expand on desktop */
+    width: 360px; /* Refined expansion */
 }
 
 @media (max-width: 1024px) {
@@ -190,10 +190,15 @@ body {
     font-size: 1.25rem;
     color: rgba(255, 255, 255, 0.5);
     cursor: pointer;
+    transition: color 0.2s;
+}
+
+.clear-search:hover {
+    color: white;
 }
 
 .search-input:focus + .clear-search {
-    color: var(--text-muted);
+    color: rgba(255, 255, 255, 0.8);
 }
 
 .venue-tabs {
@@ -204,6 +209,7 @@ body {
     overflow-x: auto;
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* IE 10+ */
+    border-bottom: 1px solid var(--border-color);
 }
 
 .venue-tabs::-webkit-scrollbar {
@@ -271,16 +277,17 @@ th {
 }
 
 td {
-    padding: 6px 12px;
+    padding: 8px 12px; /* Adjusted for spec density */
     font-size: 13.5px;
     border-bottom: 1px solid var(--border-color);
     color: var(--text-main);
     vertical-align: middle;
+    border-left: 4px solid transparent; /* Placeholder for active state */
 }
 
 tr {
     cursor: pointer;
-    transition: background-color 0.1s;
+    transition: background-color 0.2s; /* 200ms as per spec */
 }
 
 tr:hover td {
@@ -291,6 +298,10 @@ tr.active-row td {
     background-color: var(--table-active) !important;
     border-bottom-color: var(--primary-color);
     font-weight: 500;
+}
+
+tr.active-row td:first-child {
+    border-left-color: var(--primary-color);
 }
 
 .venue-header {

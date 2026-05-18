@@ -188,7 +188,7 @@ function generateTableHTML(data, headers, query = "") {
             ${data
               .map(
                 (row) => `
-                <tr onclick="this.classList.toggle('active-row')">
+                <tr tabindex="0" role="button">
                     ${headers.map((h) => `<td>${row[h] ? highlight(row[h].trim(), query) : "-"}</td>`).join("")}
                 </tr>
             `,
@@ -198,6 +198,24 @@ function generateTableHTML(data, headers, query = "") {
     </table>
   `;
 }
+
+// Event delegation for row selection
+displayArea.addEventListener("click", (e) => {
+  const tr = e.target.closest("tbody tr");
+  if (tr) {
+    tr.classList.toggle("active-row");
+  }
+});
+
+displayArea.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" || e.key === " ") {
+    const tr = e.target.closest("tbody tr");
+    if (tr) {
+      e.preventDefault();
+      tr.classList.toggle("active-row");
+    }
+  }
+});
 
 /**
  * Renders matches from all venues
