@@ -1,20 +1,36 @@
 :root {
+    /* Brand Colors */
     --primary-color: #6366f1; /* Indigo */
     --primary-hover: #4f46e5;
+
+    /* Backgrounds */
     --bg-color: #f8fafc;
     --header-bg: #0f172a; /* Deep Slate */
     --card-bg: #ffffff;
+    --header-gradient-1: #0f172a; /* Transition fallback */
+    --header-gradient-2: #1e293b; /* Transition fallback */
+
+    /* Text */
     --text-main: #0f172a;
     --text-muted: #64748b;
+
+    /* UI Elements */
     --border-color: #e2e8f0;
     --accent-color: #10b981;
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    
+    /* Layout Constants */
+    --nav-height: 64px;
+    --tab-height: 48px;
+
+    /* Table & Search Results */
     --table-hover: #f1f5f9;
     --table-alt-row: #f8fafc;
     --table-active: #e0e7ff;
-    --nav-height: 64px;
-    --tab-height: 48px;
+    --highlight-bg: #fef08a;
+    --highlight-text: #854d0e;
+    --search-summary-bg: #eef2ff;
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -26,7 +42,6 @@
         --text-main: #f1f5f9;
         --text-muted: #94a3b8;
         --border-color: #334155;
-        --accent-color: #34d399;
         --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
         --header-gradient-1: #312e81;
         --header-gradient-2: #4c1d95;
@@ -48,81 +63,84 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    overflow: hidden; /* Prevent body scroll, use container scroll */
 }
 
-header {
-    background: linear-gradient(135deg, var(--header-gradient-1) 0%, var(--header-gradient-2) 100%);
+.main-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: var(--header-bg);
     color: white;
-    padding: 2rem 1rem;
-    text-align: center;
-    box-shadow: var(--shadow-md);
 }
 
-header h1 {
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1.5rem;
+    height: var(--nav-height);
+}
+
+.header-content h1 {
+    font-size: 1.25rem;
     margin: 0;
-    font-size: 2.25rem;
-    font-weight: 800;
-    letter-spacing: -0.025em;
+    font-weight: 700;
 }
 
-header p {
-    margin: 0.5rem 0 0;
-    opacity: 0.9;
-    font-size: 1.1rem;
+.dashboard-main {
+    margin-top: calc(var(--nav-height) + var(--tab-height));
+    height: calc(100vh - var(--nav-height) - var(--tab-height));
+    overflow: auto;
+    padding: 0;
 }
 
-main {
-    max-width: 1200px;
-    width: 100%;
-    margin: -2rem auto 2rem;
-    padding: 0 1rem;
-    flex: 1;
-}
-
-.controls {
+.table-container {
     background: var(--card-bg);
-    padding: 1.5rem;
-    border-radius: 1rem;
-    box-shadow: var(--shadow-md);
-    margin-bottom: 2rem;
-}
-
-.controls > *:last-child {
-    margin-bottom: 0;
+    width: 100%;
+    border-radius: 0;
+    box-shadow: none;
+    overflow: hidden;
 }
 
 #auto-load-status {
-    font-size: 0.875rem;
-    color: var(--text-muted);
-    margin-bottom: 1.25rem;
-    padding: 0.75rem 1rem;
-    background: var(--table-hover);
-    border-radius: 0.5rem;
-    border-left: 4px solid var(--primary-color);
+    font-size: 0.8125rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-right: 1rem;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
 }
 
 .search-container {
-    margin-bottom: 1.25rem;
     position: relative;
+    width: 300px;
 }
 
 .search-input {
     width: 100%;
-    margin: 0;
-    box-sizing: border-box;
-    padding: 0.75rem 1rem;
-    border: 1px solid var(--border-color);
+    padding: 0.5rem 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 0.5rem;
-    font-size: 1rem;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    font-size: 0.875rem;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
     outline: none;
-    background: var(--card-bg);
-    color: var(--text-main);
+    transition: all 0.2s;
+}
+
+.search-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
 }
 
 .search-input:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    background: white;
+    color: var(--text-main);
+    border-color: white;
 }
 
 .clear-search {
@@ -132,54 +150,52 @@ main {
     transform: translateY(-50%);
     background: none;
     border: none;
-    font-size: 1.5rem;
-    color: var(--text-muted);
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.5);
     cursor: pointer;
-    line-height: 1;
-    padding: 0 5px;
 }
 
-.clear-search:hover {
-    color: var(--primary-color);
+.search-input:focus + .clear-search {
+    color: var(--text-muted);
 }
 
 .venue-tabs {
     display: flex;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-    justify-content: flex-start;
+    gap: 0.5rem;
+    padding: 0 1.5rem;
+    height: var(--tab-height);
+    background: rgba(255, 255, 255, 0.05);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    align-items: center;
+    overflow-x: auto;
+    scrollbar-width: none; /* Hide scrollbar for Firefox */
+}
+
+.venue-tabs::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for Chrome/Safari */
 }
 
 .tab-button {
-    padding: 0.625rem 1.25rem;
-    border: 1px solid var(--border-color);
-    background: var(--card-bg);
-    border-radius: 0.5rem;
-    cursor: pointer;
-    font-weight: 600;
+    padding: 0.375rem 0.875rem;
+    background: transparent;
+    border: none;
+    border-radius: 0.375rem;
+    color: rgba(255, 255, 255, 0.7);
     font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
     transition: all 0.2s;
-    color: var(--text-muted);
 }
 
 .tab-button:hover {
-    border-color: var(--primary-color);
-    color: var(--primary-color);
-    background: var(--table-hover);
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
 }
 
 .tab-button.active {
-    background: var(--primary-color);
-    color: white;
-    border-color: var(--primary-color);
-    box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.4);
-}
-
-.table-container {
-    background: var(--card-bg);
-    border-radius: 1rem;
-    box-shadow: var(--shadow-md);
-    overflow: hidden;
+    background: white;
+    color: var(--primary-color);
 }
 
 .table-wrapper {
@@ -313,8 +329,9 @@ tbody tr:nth-child(even) {
 
 /* Responsive */
 @media (max-width: 640px) {
-    header h1 { font-size: 1.75rem; }
-    main { margin-top: -1rem; }
-    .controls { padding: 1rem; }
+    .header-content { padding: 0 1rem; }
+    .header-content h1 { font-size: 1rem; }
+    .search-container { width: 140px; }
+    #auto-load-status { display: none; }
     th, td { padding: 0.75rem 1rem; }
 }

@@ -16,25 +16,22 @@
 
 <body>
 
-    <header>
-        <h1>2026联课例常活动场地</h1>
-        <p>2026年1月20日至8月18日</p>
+    <header class="main-header">
+        <div class="header-content">
+            <h1>2026联课活动场地系统</h1>
+            <div class="header-actions">
+                <div id="auto-load-status">🔍 正在初始化系统....</div>
+                <div class="search-container">
+                    <input type="text" id="venue-search" class="search-input" placeholder="全局搜索...">
+                </div>
+            </div>
+        </div>
+        <nav id="venue-tabs" class="venue-tabs"></nav>
     </header>
 
-    <main>
-        <div class="controls">
-            <div id="auto-load-status">🔍 正在初始化系统....</div>
-            <div class="search-container">
-                <input type="text" id="venue-search" class="search-input" placeholder="搜索场地&联课团体">
-            </div>
-            <div id="venue-tabs" class="venue-tabs"></div>
-        </div>
-
+    <main class="dashboard-main">
         <div id="display-area" class="table-container">
-            <div class="empty-state">
-                <span class="empty-state-icon">📂</span>
-                <p>正在载入场地资料，请稍等...</p>
-            </div>
+            <!-- Data loaded here -->
         </div>
     </main>
 
